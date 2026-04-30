@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_schema: ${HIBERNATE_DEFAULT_SCHEMA:sales}
+        format_sql: true
+  rabbitmq:
+    host: ${RABBIT_HOST:rabbitmq}
+    port: ${RABBIT_PORT:5672}
+
+server:
+  port: ${SERVER_PORT:8081}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+springdoc:
+  api-docs:
+    path: /api/v1/openapi
+  swagger-ui:
+    # serve swagger UI under /api/v1/swagger-ui (open index at /api/v1/swagger-ui/index.html)
+    path: /api/v1/swagger-ui
