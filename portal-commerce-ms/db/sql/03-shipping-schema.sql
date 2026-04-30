@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS shipping.shipments (
 
 CREATE TABLE IF NOT EXISTS shipping.shipment_trace (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    shipment_id UUID NOT NULL,
+    shipment_id UUID,
     sale_id UUID NOT NULL,
     trace_type VARCHAR(50) NOT NULL,
     description TEXT NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS shipping.shipment_trace (
 
 CREATE TABLE IF NOT EXISTS shipping.processed_event (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    event_id VARCHAR(100) NOT NULL UNIQUE,
+    event_id UUID NOT NULL UNIQUE,
     sale_id UUID NOT NULL,
     processed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
