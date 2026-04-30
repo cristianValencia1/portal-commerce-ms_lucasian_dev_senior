@@ -1,0 +1,108 @@
+version: '3.9'
+services:
+  postgres-commerce:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    container_name: postgres-commerce
+    env_file: .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_commerce_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - commerce-net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT}:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - commerce-net
+
+  sales-service:
+    build:
+      context: ./sales-service
+      dockerfile: Dockerfile
+    container_name: sales-service
+    env_file: .env
+    environment:
+      DB_URL: ${DB_URL}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      RABBIT_HOST: ${RABBIT_HOST}
+      RABBIT_PORT: ${RABBITMQ_PORT}
+      SERVER_PORT: ${SALES_SERVICE_PORT}
+      HIBERNATE_DEFAULT_SCHEMA: sales
+    ports:
+      - "${SALES_SERVICE_PORT}:8081"
+    depends_on:
+      postgres-commerce:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8081/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - commerce-net
+
+  shipping-service:
+    build:
+      context: ./shipping-service
+      dockerfile: Dockerfile
+    container_name: shipping-service
+    env_file: .env
+    environment:
+      DB_URL: ${DB_URL}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      RABBIT_HOST: ${RABBIT_HOST}
+      RABBIT_PORT: ${RABBITMQ_PORT}
+      SERVER_PORT: ${SHIPPING_SERVICE_PORT}
+      HIBERNATE_DEFAULT_SCHEMA: shipping
+      EXCHANGE_NAME: ${EXCHANGE_NAME}
+      ROUTING_KEY: ${ROUTING_KEY}
+      QUEUE_NAME: ${QUEUE_NAME}
+    ports:
+      - "${SHIPPING_SERVICE_PORT}:8082"
+    depends_on:
+      postgres-commerce:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8082/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - commerce-net
+
+networks:
+  commerce-net:
+    driver: bridge
+
+volumes:
+  postgres_commerce_data:
