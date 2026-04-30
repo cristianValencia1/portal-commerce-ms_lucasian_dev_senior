@@ -28,7 +28,8 @@ Este documento central describe la arquitectura de `portal-commerce-ms`, enumera
 - Responsabilidad: Exponer API REST para CRUD de ventas, validación, persistencia en Postgres (schema `sales`) y publicar eventos de tipo `sale.created` a RabbitMQ.
 - Endpoints importantes:
   - `GET /actuator/health` — health
-  - Swagger UI: `http://localhost:8081/swagger-ui/index.html`
+  - OpenAPI JSON: `http://localhost:8081/api/v1/openapi`
+  - Swagger UI: `http://localhost:8081/api/v1/swagger-ui/index.html`
 - Documentación detallada: [sales-service/README.md](sales-service/README.md)
 
 ### shipping-service
@@ -36,7 +37,8 @@ Este documento central describe la arquitectura de `portal-commerce-ms`, enumera
 - Responsabilidad: Consumir eventos de ventas (`sale.created`), crear órdenes de envío, persistir en schema `shipping` y exponer endpoints de consulta.
 - Endpoints importantes:
   - `GET /actuator/health` — health
-  - Swagger UI: `http://localhost:8082/swagger-ui/index.html`
+  - OpenAPI JSON: `http://localhost:8082/api/v1/openapi`
+  - Swagger UI: `http://localhost:8082/api/v1/swagger-ui/index.html`
 - Documentación detallada: [shipping-service/README.md](shipping-service/README.md)
 
 ### postgres-commerce

@@ -29,7 +29,7 @@ public class SaleEntity {
     @Id
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(name = "customer_name", nullable = false)
     private String customerFullName;
 
     @Column(nullable = false)
@@ -38,7 +38,7 @@ public class SaleEntity {
     @Column(nullable = false)
     private String customerPhone;
 
-    @Column(nullable = false)
+    @Column(name = "postal_code", nullable = false)
     private String customerPostalCode;
 
     @OneToMany(mappedBy = "sale", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)

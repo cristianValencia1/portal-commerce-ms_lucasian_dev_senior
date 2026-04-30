@@ -29,7 +29,14 @@ Capas lógicas:
 ## Endpoints y observabilidad
 
 - Actuator health: `http://localhost:8082/actuator/health`
-- Swagger UI: `http://localhost:8082/swagger-ui/index.html`
+- OpenAPI / Swagger (springdoc):
+	- OpenAPI JSON: `http://localhost:8082/api/v1/openapi`
+	- Swagger UI (navegador): `http://localhost:8082/api/v1/swagger-ui/index.html`
+	- Ejemplo curl para obtener OpenAPI JSON:
+
+```bash
+curl -sS http://localhost:8082/api/v1/openapi | jq .
+```
 
 ## Persistencia
 

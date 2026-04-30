@@ -75,10 +75,12 @@ public class CreateSaleUseCaseImpl implements CreateSaleUseCase {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        recordTrace(sale, TraceType.SALE_RECEIVED, "Sale received");
-        recordTrace(sale, TraceType.SALE_VALIDATED, "Sale validated");
-
+        // Persist sale first so trace entries referencing sale_id satisfy FK constraints
         var persistedSale = saleRepositoryPort.save(sale);
+
+        // Record trace events after persistence
+        recordTrace(persistedSale, TraceType.SALE_RECEIVED, "Sale received");
+        recordTrace(persistedSale, TraceType.SALE_VALIDATED, "Sale validated");
         recordTrace(persistedSale, TraceType.SALE_REGISTERED, "Sale registered");
 
         var outboxEvent = OutboxEvent.builder()

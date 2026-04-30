@@ -31,4 +31,5 @@ springdoc:
   api-docs:
     path: /api/v1/openapi
   swagger-ui:
-    path: /api/v1/swagger-ui.html
+    # serve swagger UI under /api/v1/swagger-ui (open index at /api/v1/swagger-ui/index.html)
+    path: /api/v1/swagger-ui

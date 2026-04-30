@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS sales.outbox_event (
     aggregate_id UUID NOT NULL,
     aggregate_type VARCHAR(80) NOT NULL,
     event_type VARCHAR(120) NOT NULL,
-    payload JSONB NOT NULL,
+    payload TEXT NOT NULL,
     status VARCHAR(40) NOT NULL,
     retry_count INTEGER NOT NULL DEFAULT 0 CHECK (retry_count >= 0),
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
